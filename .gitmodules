@@ -1,3 +1,6 @@
 [submodule "external/TheSocialWallet"]
 	path = external/TheSocialWallet
 	url = https://github.com/FreeBonde/TheSocialWallet.git
+[submodule "external/IM4DEC"]
+	path = external/IM4DEC
+	url = https://github.com/FreeBonde/IM4DEC.git
