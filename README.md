@@ -1,3 +1,6 @@
+# 🚀 TrustChain Hackathon Submission
+This repository contains the prototype developed for the NGI TrustChain Hackathon (Nov 2025).
+
 # FreeBonde x TrustChain Hackathon
 
 A prototype demonstrating how decentralized identity (DID), verifiable credentials (VCs), and secure data flows can enhance trust and transparency in indoor smart farming.
