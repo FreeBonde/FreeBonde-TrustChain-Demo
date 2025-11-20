@@ -1,0 +1,3 @@
+[submodule "external/TheSocialWallet"]
+	path = external/TheSocialWallet
+	url = https://github.com/FreeBonde/TheSocialWallet.git
