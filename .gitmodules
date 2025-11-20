@@ -7,3 +7,6 @@
 [submodule "external/MS3"]
 	path = external/MS3
 	url = https://github.com/FreeBonde/MS3.git
+[submodule "external/TokEngine"]
+	path = external/TokEngine
+	url = https://github.com/FreeBonde/TokEngine.git
