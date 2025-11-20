@@ -1,0 +1,8 @@
+{
+  "device_id": "did:example:freebonde-device-001",
+  "timestamp": "2025-11-19T10:00:00Z",
+  "ec": 1.8,
+  "ph": 6.0,
+  "water_level": "normal",
+  "signature": "placeholder-signature"
+}
