@@ -4,3 +4,6 @@
 [submodule "external/IM4DEC"]
 	path = external/IM4DEC
 	url = https://github.com/FreeBonde/IM4DEC.git
+[submodule "external/MS3"]
+	path = external/MS3
+	url = https://github.com/FreeBonde/MS3.git
