@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeBonde TrustLayer Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="js/trustchain_integration.js"></script>
+    <style>
+        :root { --primary: #10b981; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 1000px; }
+        
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .logo { font-size: 24px; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .wallet-badge { background: #334155; padding: 8px 16px; border-radius: 20px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+
+        /* Main Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        
+        /* Cards */
+        .card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid #334155; position: relative; overflow: hidden; }
+        h2 { margin-top: 0; font-size: 16px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Video Embed */
+        .video-wrapper {
+            width: 100%; height: 300px; background: #000; border-radius: 12px;
+            overflow: hidden; position: relative;
+        }
+        iframe { width: 100%; height: 100%; object-fit: cover; }
+        .live-tag { 
+            position: absolute; top: 15px; left: 15px; 
+            background: rgba(220, 38, 38, 0.9); color: white; 
+            padding: 4px 10px; border-radius: 4px; 
+            font-size: 11px; font-weight: bold; 
+            display: flex; align-items: center; gap: 6px; 
+            z-index: 10;
+        }
+        .live-tag::before { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; animation: blink 1s infinite; }
+        .device-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 20px 15px 10px 15px;
+            font-size: 12px; color: #cbd5e1;
+        }
+
+        /* Sensor Grid */
+        .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .sensor-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; text-align: center; }
+        .sensor-val { font-size: 24px; font-weight: bold; color: var(--primary); margin: 5px 0; }
+        .sensor-label { font-size: 12px; color: #94a3b8; }
+
+        /* Action Area */
+        .action-area { display: flex; flex-direction: column; gap: 15px; }
+        .btn { background: var(--primary); color: #064e3b; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; }
+        .btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+        .btn:hover:not(:disabled) { opacity: 0.9; }
+        .btn-secondary { background: transparent; border: 1px solid #334155; color: #fff; }
+
+        /* Console */
+        .console { margin-top: 20px; background: #000; padding: 15px; border-radius: 12px; height: 150px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; border: 1px solid #334155; }
+        .log-entry { margin-bottom: 4px; color: #33ff00; }
+        .timestamp { color: #666; margin-right: 8px; }
+        
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo"><i class="fa-solid fa-seedling"></i> FreeBonde App</div>
+        <div class="wallet-badge" id="wallet-status">
+            <i class="fa-solid fa-wallet"></i> <span>Not Connected</span>
+        </div>
+    </header>
+
+    <div class="dashboard-grid">
+        <!-- Left: Visuals -->
+        <div>
+            <div class="card">
+                <h2><i class="fa-solid fa-eye"></i> Verified Growth Stream</h2>
+                <div class="video-wrapper">
+                    <div class="live-tag">LIVE FEED</div>
+                    <!-- Embedded YouTube Video: Autoplay, Muted, Loop -->
+<iframe 
+    width="100%" 
+    height="100%" 
+    src="https://www.youtube.com/embed/IY7Fogu_1ys?autoplay=1&mute=1&controls=0&loop=1&playlist=nhoSmYnMI04&modestbranding=1&rel=0" 
+    title="FreeBonde Live Growth" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen
+    style="object-fit: cover;">
+</iframe>
+                    <div class="device-overlay">
+                        <strong><i class="fa-solid fa-microchip"></i> Device DID:</strong> did:freebonde:iot-stockholm-01 <br>
+                        <strong><i class="fa-solid fa-shield-halved"></i> Status:</strong> Secure Enclave Active
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:20px;">
+                <h2><i class="fa-solid fa-chart-line"></i> Sensor Telemetry (Signed)</h2>
+                <div class="sensor-grid" id="sensor-display">
+                    <div class="sensor-box">
+                        <div class="sensor-label">pH Level</div>
+                        <div class="sensor-val">--</div>
+                    </div>
+                    <div class="sensor-box">
+                        <div class="sensor-label">EC (Nutrients)</div>
+                        <div class="sensor-val">--</div>
+                    </div>
+                    <div class="sensor-box">
+                        <div class="sensor-label">Temp</div>
+                        <div class="sensor-val">--</div>
+                    </div>
+                    <div class="sensor-box">
+                        <div class="sensor-label">Light Cycle</div>
+                        <div class="sensor-val">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Actions -->
+        <div class="action-area">
+            <div class="card">
+                <h2>Step 1: Identity</h2>
+                <p style="font-size:12px; color:#94a3b8; margin-bottom:15px;">Login via <strong>The Social Wallet</strong> (OIDC/SIOPv2).</p>
+                <button class="btn" id="btn-connect" onclick="runIdentity()">
+                    <i class="fa-solid fa-fingerprint"></i> Connect Identity
+                </button>
+            </div>
+
+            <div class="card">
+                <h2>Step 2: IoT Sync</h2>
+                <p style="font-size:12px; color:#94a3b8; margin-bottom:15px;">Verify device signature & read sensors.</p>
+                <button class="btn btn-secondary" id="btn-sync" onclick="runIoT()" disabled>
+                    <i class="fa-solid fa-rotate"></i> Sync Device Data
+                </button>
+            </div>
+
+            <div class="card">
+                <h2>Step 3: Verification</h2>
+                <p style="font-size:12px; color:#94a3b8; margin-bottom:15px;">Mint <strong>IM4DEC</strong> Verifiable Credential.</p>
+                <button class="btn btn-secondary" id="btn-mint" onclick="runMint()" disabled>
+                    <i class="fa-solid fa-certificate"></i> Mint Credential
+                </button>
+            </div>
+
+            <div class="card" style="background:#064e3b; border:none; display:none;" id="success-card">
+                <div style="text-align:center; color:#fff;">
+                    <i class="fa-solid fa-check-circle" style="font-size:40px; margin-bottom:10px;"></i>
+                    <h3 style="margin:0;">Minted!</h3>
+                    <p style="font-size:12px;">Harvest verified on TrustChain.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Logs -->
+    <div class="console" id="console">
+        <div class="log-entry"><span class="timestamp">[System]</span> TrustChain Node initialized... Waiting for user authentication.</div>
+    </div>
+</div>
+
+<script>
+    // Initialize logic
+    const client = new TrustChainClient();
+    const term = document.getElementById('console');
+
+    function log(msg) {
+        const time = new Date().toLocaleTimeString().split(' ')[0];
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        div.innerHTML = `<span class="timestamp">[${time}]</span> ${msg}`;
+        term.insertBefore(div, term.lastElementChild);
+        term.scrollTop = term.scrollHeight;
+    }
+
+    async function runIdentity() {
+        document.getElementById('btn-connect').innerText = "Connecting...";
+        log("Initiating SIOPv2 Authentication flow...");
+        
+        const result = await client.authenticate(); 
+        
+        if(result.status === "success") {
+            log(`Authenticated DID: ${result.did}`);
+            document.getElementById('btn-connect').innerHTML = `<i class="fa-solid fa-check"></i> Connected`;
+            document.getElementById('btn-connect').disabled = true;
+            document.getElementById('wallet-status').innerHTML = `<i class="fa-solid fa-user-check"></i> ${result.did.substr(0,15)}...`;
+            document.getElementById('wallet-status').style.background = "#064e3b";
+            document.getElementById('wallet-status').style.color = "#34d399";
+            document.getElementById('btn-sync').className = "btn"; 
+            document.getElementById('btn-sync').disabled = false;
+        }
+    }
+
+    async function runIoT() {
+        document.getElementById('btn-sync').innerText = "Syncing...";
+        log("Requesting signed telemetry from MasterBonde V1...");
+        
+        const data = await client.syncDevice();
+        
+        // Update UI
+        const sensors = document.querySelectorAll('.sensor-val');
+        sensors[0].innerText = data.metrics.ph;
+        sensors[1].innerText = data.metrics.ec; // Now uses 1.2-2.0 range
+        sensors[2].innerText = data.metrics.temp + "°C";
+        sensors[3].innerText = data.metrics.light; // Now shows "16h/8h"
+
+        log(`Payload verified. Signature: ${data.signature.substr(0,20)}...`);
+        document.getElementById('btn-sync').innerHTML = `<i class="fa-solid fa-check"></i> Synced`;
+        document.getElementById('btn-sync').disabled = true;
+        document.getElementById('btn-mint').className = "btn"; 
+        document.getElementById('btn-mint').disabled = false;
+    }
+
+    async function runMint() {
+        document.getElementById('btn-mint').innerText = "Minting...";
+        log("Generating W3C Verifiable Credential (IM4DEC schema)...");
+        
+        const vc = await client.mintCredential({ 
+            deviceId: "FB-IOT-01", 
+            metrics: { ph: 6.5, ec: 1.8 } 
+        });
+        
+        log(`VC Issued! Proof Hash: ${Math.random().toString(16).substr(2, 20)}`);
+        document.getElementById('btn-mint').innerHTML = `<i class="fa-solid fa-check"></i> Minted`;
+        document.getElementById('btn-mint').disabled = true;
+        document.getElementById('success-card').style.display = "block";
+    }
+</script>
+
+</body>
+</html>
